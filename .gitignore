@@ -1,39 +1,35 @@
-# History files
-.Rhistory
-.Rapp.history
+## Below is the pair of functions that cache the inverse of a matrix.
 
-# Session Data files
-.RData
+## This function creates a special "matrix" object that can cache its inverse.
 
-# User-specific files
-.Ruserdata
+makeCacheMatrix <- function(x = matrix()) {
+        s <- NULL
+        set <- function(y){
+                x<<- y
+                s<<- NULL
+        }
+        get <- function() x
+        setsolve <- function(solve) s <<- solve
+        getsolve <- function() s
+        list(set = set, get = get,
+             setsolve = setsolve,
+             getsolve = getsolve)
 
-# Example code in package build process
-*-Ex.R
 
-# Output files from R CMD build
-/*.tar.gz
+## This function calculates inverse of vector created above.
+##it first checks whether its already calculated or not.
+##if Yes, it gets the inverse and skips computation.
+##if No, it calculates the inverse of the data.
 
-# Output files from R CMD check
-/*.Rcheck/
-
-# RStudio files
-.Rproj.user/
-
-# produced vignettes
-vignettes/*.html
-vignettes/*.pdf
-
-# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
-.httr-oauth
-
-# knitr and R markdown default cache directories
-*_cache/
-/cache/
-
-# Temporary files created by R markdown
-*.utf8.md
-*.knit.md
-
-# R Environment Variables
-.Renviron
+cacheSolve <- function(x, ...) {
+        s <- x$getsolve()
+        if(!is.null(s)) {
+                message("getting cached data")
+                return(s)
+        }
+        data <- x$get()
+        s <- solve(data, ...)
+        x$setsolve(s)
+        s
+}
+ ## Return a matrix that is the inverse of 'x'
